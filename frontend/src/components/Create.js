@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form';
 import AxiosInstance from './Axios';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
 
 const Create = () => {
   const navigate = useNavigate();
@@ -19,7 +21,17 @@ const Create = () => {
     status: '',
   };
 
-  const { handleSubmit, control } = useForm({ defaultValues: defaultValue });
+  const schema = yup
+  .object({
+    name: yup.string().required('Name is required field'),
+    status: yup.string().required('Status is required field'),
+    comments: yup.string(),
+    start_date: yup.date().required('Start date is required field'),
+    end_date: yup.date().required('End date is required field').min(yup.ref('start_date'), 'The end date can not be before the start date'),
+  })
+  .required()
+
+  const { handleSubmit, control } = useForm({ defaultValues: defaultValue, resolver: yupResolver(schema) });
 
   const submission = (data) => {
     const StartDate = dayjs(data.start_date['$d']).format('YYYY-MM-DD');
@@ -46,19 +58,45 @@ const Create = () => {
   return (
     <div>
       <form onSubmit={handleSubmit(submission)}>
-        <Box sx={{ display: 'flex', width: '100%', backgroundColor: '#00003f', marginBottom: '10px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            backgroundColor: '#00003f',
+            marginBottom: '10px',
+            borderRadius: '8px', // Add border radius
+          }}
+        >
           <Typography sx={{ margin: '20px', color: '#fff' }}>Create Record</Typography>
         </Box>
 
         {/* Display Alert if there's an error */}
         {error && (
-          <Box sx={{ marginBottom: '10px' }}>
-            <Alert severity="error" onClose={() => setError('')}>{error}</Alert>
+          <Box sx={{ marginBottom: '10px', borderRadius: '8px' }}>
+            <Alert severity="error" onClose={() => setError('')}>
+              {error}
+            </Alert>
           </Box>
         )}
 
-        <Box sx={{ display: 'flex', width: '100%', boxShadow: 3, padding: 4, flexDirection: 'column' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: '40px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            width: '100%',
+            boxShadow: 3,
+            padding: 4,
+            flexDirection: 'column',
+            borderRadius: '8px', // Add border radius
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              marginBottom: '40px',
+              borderRadius: '8px', // Add border radius
+            }}
+          >
             <MyTextField
               label="Name"
               name="name"
@@ -80,7 +118,13 @@ const Create = () => {
             />
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              borderRadius: '8px', // Add border radius
+            }}
+          >
             <MyMultiLineField
               label="Comments"
               name="comments"
@@ -95,7 +139,14 @@ const Create = () => {
               width={'30%'}
             />
             <Box sx={{ width: '30%' }}>
-              <Button variant="contained" type="submit" sx={{ width: '100%' }}>
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{
+                  width: '100%',
+                  borderRadius: '8px', // Add border radius to the button
+                }}
+              >
                 Submit
               </Button>
             </Box>

@@ -6,7 +6,7 @@ import MySelectField from './forms/MySelectField';
 import MyTextField from './forms/MyTextField';
 import { useForm } from 'react-hook-form';
 import AxiosInstance from './Axios';
-import Dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const Edit = () => {
@@ -21,8 +21,8 @@ const Edit = () => {
       setValue('name', res.data.name);
       setValue('status', res.data.status);
       setValue('comments', res.data.comments); // Ensure this matches the backend key
-      setValue('start_date', Dayjs(res.data.start_date));
-      setValue('end_date', Dayjs(res.data.end_date));
+      setValue('start_date', dayjs(res.data.start_date));
+      setValue('end_date', dayjs(res.data.end_date));
     });
   };
 
@@ -42,8 +42,8 @@ const Edit = () => {
   const { handleSubmit, setValue, control } = useForm({ defaultValues: defaultValue });
 
   const submission = (data) => {
-    const StartDate = Dayjs(data.start_date['$d']).format('YYYY-MM-DD');
-    const EndDate = Dayjs(data.end_date['$d']).format('YYYY-MM-DD');
+    const StartDate = dayjs(data.start_date['$d']).format('YYYY-MM-DD');
+    const EndDate = dayjs(data.end_date['$d']).format('YYYY-MM-DD');
     AxiosInstance.put(`project/${MyId}/`, {
       name: data.name,
       status: data.status,

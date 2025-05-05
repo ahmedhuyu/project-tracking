@@ -73,9 +73,10 @@ const Home = () => {
           data={myData} 
           enableRowActions
           sx={{
-            borderRadius: '10px', // Add border radius to the table
+            borderRadius: '8px', // Changed border radius to 8px
             overflow: 'hidden', // Ensure the border radius is applied properly
             boxShadow: 3, // Optional: Add a shadow for better visuals
+            BorderColor: 'black'
           }}
           renderRowActions={({row}) => (
             <Box 
@@ -83,14 +84,14 @@ const Home = () => {
                 display: 'flex', 
                 flexWrap: 'nowrap', 
                 gap: '8px',
-                borderRadius: '10px', // Add border radius to the action buttons container
+                borderRadius: '8px', // Changed border radius to 8px for the action buttons container
               }}
             >
               <IconButton 
                 color="secondary" 
                 component={Link} 
                 to={`edit/${row.original.id}`}
-                sx={{ borderRadius: '10px' }} // Add border radius to the edit button
+                sx={{ borderRadius: '8px' }} // Changed border radius to 8px for the edit button
               >
                 <EditIcon />
               </IconButton>
@@ -98,7 +99,7 @@ const Home = () => {
                 color="error" 
                 component={Link} 
                 to={`delete/${row.original.id}`}
-                sx={{ borderRadius: '10px' }} // Add border radius to the delete button
+                sx={{ borderRadius: '8px' }} // Changed border radius to 8px for the delete button
               >
                 <DeleteIcon />
               </IconButton>
