@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Button, Typography, Alert } from '@mui/material'; // Import Alert
 import MyDatePickerField from './forms/MyDatePickerField';
 import MyMultiLineField from './forms/MyMultiLineField';
@@ -6,25 +6,45 @@ import MySelectField from './forms/MySelectField';
 import MyTextField from './forms/MyTextField';
 import { useForm } from 'react-hook-form';
 import AxiosInstance from './Axios';
-import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+import Dayjs from 'dayjs';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const Create = () => {
+const Edit = () => {
+  const MyParam = useParams()
+  const MyId = MyParam.id 
+
+  
+
+  const GetData = () => {
+    AxiosInstance.get(`project/${MyId}`).then((res) => {
+      console.log(res.data);
+      setValue('name', res.data.name);
+      setValue('status', res.data.status);
+      setValue('comments', res.data.comments); // Ensure this matches the backend key
+      setValue('start_date', Dayjs(res.data.start_date));
+      setValue('end_date', Dayjs(res.data.end_date));
+    });
+  };
+
+  useEffect(() => {
+    GetData()
+  }, [])
+
   const navigate = useNavigate();
   const [error, setError] = useState(''); // State to store error message
 
   const defaultValue = {
     name: '',
-    comments: '',
+    comments: '', // Corrected
     status: '',
   };
 
-  const { handleSubmit, control } = useForm({ defaultValues: defaultValue });
+  const { handleSubmit, setValue, control } = useForm({ defaultValues: defaultValue });
 
   const submission = (data) => {
-    const StartDate = dayjs(data.start_date['$d']).format('YYYY-MM-DD');
-    const EndDate = dayjs(data.end_date['$d']).format('YYYY-MM-DD');
-    AxiosInstance.post(`project/`, {
+    const StartDate = Dayjs(data.start_date['$d']).format('YYYY-MM-DD');
+    const EndDate = Dayjs(data.end_date['$d']).format('YYYY-MM-DD');
+    AxiosInstance.put(`project/${MyId}/`, {
       name: data.name,
       status: data.status,
       comments: data.comments,
@@ -47,7 +67,7 @@ const Create = () => {
     <div>
       <form onSubmit={handleSubmit(submission)}>
         <Box sx={{ display: 'flex', width: '100%', backgroundColor: '#00003f', marginBottom: '10px' }}>
-          <Typography sx={{ margin: '20px', color: '#fff' }}>Create Record</Typography>
+          <Typography sx={{ marginLeft: '20px', color: '#fff' }}>Edit Record</Typography>
         </Box>
 
         {/* Display Alert if there's an error */}
@@ -94,9 +114,16 @@ const Create = () => {
               control={control}
               width={'30%'}
             />
-            <Box sx={{ width: '30%' }}>
-              <Button variant="contained" type="submit" sx={{ width: '100%' }}>
+            <Box sx={{ width: '30%', display: 'flex', gap: 2 }}>
+              <Button variant="contained" type="submit" sx={{ width: '50%' }}>
                 Submit
+              </Button>
+              <Button
+                variant="outlined"
+                sx={{ width: '50%' }}
+                onClick={() => navigate('/')} // Navigate to the home page
+              >
+                Cancel
               </Button>
             </Box>
           </Box>
@@ -106,4 +133,4 @@ const Create = () => {
   );
 };
 
-export default Create;
+export default Edit;
