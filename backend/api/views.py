@@ -10,6 +10,16 @@ from rest_framework.response import Response
 # def home(request):
 #     return HttpResponse("This is a home page")
 
+class ProjectManagerViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]
+    queryset = ProjectManager.objects.all()
+    serializer_class = ProjectManagerSerializer
+
+    def list(self, request):
+        queryset = ProjectManager.objects.all() #bring all Project objects
+        serializer = self.serializer_class(queryset, many=True) #Translate to the front-end
+        return Response(serializer.data) #send the data to the client
+
 class ProjectViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     queryset = Project.objects.all()
