@@ -5,3 +5,4 @@ from . import models
 
 admin.site.register(models.Project)
 admin.site.register(models.ProjectManager)
+admin.site.register(models.Employees) 

@@ -10,9 +10,11 @@ import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
+import MyMultipleSelectField from './forms/MyMultiSelectField';
 
 const Create = () => {
   const [projectmanager, setProjectmanager] = useState()
+  const [employees, setEmployees] = useState()
   const [loading, setLoading] = useState(true)
 
   const hardcoded_options = [
@@ -25,6 +27,12 @@ const Create = () => {
   const GetData = () => {
     AxiosInstance.get(`projectmanager/`).then((res) => {
       setProjectmanager(res.data)
+      console.log(res.data)
+      setLoading(false)
+    })
+
+    AxiosInstance.get(`employees/`).then((res) => {
+      setEmployees(res.data)
       console.log(res.data)
       setLoading(false)
     })
@@ -49,6 +57,7 @@ const Create = () => {
     name: yup.string().required('Name is required field'),
     projectmanager: yup.string().required('Project manager is a required field'),
     status: yup.string().required('Status is required field'),
+    employees: yup.array().min(1, 'Must contain at least one employee'),
     comments: yup.string(),
     start_date: yup.date().required('Start date is required field'),
     end_date: yup.date().required('End date is required field').min(yup.ref('start_date'), 'The end date can not be before the start date'),
@@ -60,9 +69,11 @@ const Create = () => {
   const submission = (data) => {
     const StartDate = dayjs(data.start_date['$d']).format('YYYY-MM-DD');
     const EndDate = dayjs(data.end_date['$d']).format('YYYY-MM-DD');
+    // console.log('submission', data)
     AxiosInstance.post(`project/`, {
       name: data.name,
       projectmanager: data.projectmanager,
+      employees: data.employees,
       status: data.status,
       comments: data.comments,
       start_date: StartDate,
@@ -171,6 +182,23 @@ const Create = () => {
                 control={control}
                 width={'30%'}
                 options={projectmanager}
+              />
+
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                borderRadius: '8px', // Add border radius
+                marginTop: '40px'
+              }}
+            >
+              <MyMultipleSelectField 
+                label="Employees"
+                name="employees"
+                control={control}
+                width={'30%'}
+                options={employees}
               />
 
             </Box>

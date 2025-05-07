@@ -19,6 +19,16 @@ class ProjectManagerViewSet(viewsets.ViewSet):
         queryset = ProjectManager.objects.all() #bring all Project objects
         serializer = self.serializer_class(queryset, many=True) #Translate to the front-end
         return Response(serializer.data) #send the data to the client
+    
+class EmploeesViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.AllowAny]
+    queryset = Employees.objects.all()
+    serializer_class = EmployeesSerializer
+
+    def list(self, request):
+        queryset = Employees.objects.all() #bring all Project objects
+        serializer = self.serializer_class(queryset, many=True) #Translate to the front-end
+        return Response(serializer.data) #send the data to the client
 
 class ProjectViewSet(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
@@ -55,4 +65,4 @@ class ProjectViewSet(viewsets.ViewSet):
     def destroy(self, request, pk=None):
         project = self.queryset.get(pk=pk)
         project.delete()
-        return Response(status=204)
+        return Response(status=204) 
